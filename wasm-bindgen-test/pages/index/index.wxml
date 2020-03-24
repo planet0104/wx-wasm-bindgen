@@ -1,0 +1,6 @@
+<!--index.wxml-->
+<view class="container">
+  <view class="usermotto">
+    <text>wasm-bindgen-demo</text>
+  </view>
+</view>

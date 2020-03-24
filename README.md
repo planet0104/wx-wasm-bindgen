@@ -1,2 +1,2 @@
-# wx-wasm-bindgen
- 在微信小程序使用wasm-bindgen
+# 用Rust语言开发微信小程序：wasm-bindgen
+
