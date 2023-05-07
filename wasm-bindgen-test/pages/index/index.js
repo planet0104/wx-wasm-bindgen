@@ -1,16 +1,13 @@
 //index.js
-const app = getApp()
-
-var hello = require("hello");
-
-hello.run();
+import init, {onLoad, md5 } from "hello";
 
 Page({
-  onLoad: function () {
-    hello.onLoad();
+  async onLoad() {
+    await init("/pages/index/hello.wasm");
+    onLoad();
 
-    var hex = hello.md5("Rust编程语言");
+    var hex = md5("Rust编程语言");
 
-    console.log(hex);
+    console.log("MD5=", hex);
   }
 })

@@ -1,17 +1,16 @@
 [package]
 name = "hello"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["planet0104 <planet2@qq.com>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = "0.2.59"
-js-sys = "0.3.36"
+wasm-bindgen = "0.2.84"
+# wasm-bindgen-futures = "0.4.34"
+js-sys = "0.3.61"
 md5 = "0.7.0"
 
 [profile.release]

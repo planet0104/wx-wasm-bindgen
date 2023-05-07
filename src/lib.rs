@@ -9,35 +9,8 @@ extern "C" {
     fn error(s: &str);
     #[wasm_bindgen(js_namespace = wx)]
     fn showModal(param: &Object);
-}
-
-fn page_on_load() -> Result<JsValue, JsValue> {
-    let param = Object::new();
-    Reflect::set(&param, &JsValue::from("title"), &JsValue::from("提示"))?;
-    Reflect::set(
-        &param,
-        &JsValue::from("content"),
-        &JsValue::from("这是一个模态弹窗"),
-    )?;
-    /*
-    let handler = move |res:&JsValue| -> Result<JsValue, JsValue> {
-        let confirm:bool = Reflect::get(res, &JsValue::from("confirm"))?.as_bool().unwrap_or(false);
-        let cancel:bool = Reflect::get(res, &JsValue::from("cancel"))?.as_bool().unwrap_or(false);
-
-        let data = Object::new();
-        if confirm{
-            Reflect::set(&data, &JsValue::from("data"), &JsValue::from("用户点击确定"))?;
-        } else if cancel {
-            Reflect::set(&data, &JsValue::from("data"), &JsValue::from("用户点击取消"))?;
-        }
-        set_data.call0(&data)
-    };
-    let handler = Closure::wrap(Box::new(handler) as Box<dyn Fn(&JsValue) -> Result<JsValue, JsValue> >);
-    Reflect::set(&param, &JsValue::from("success"), handler.as_ref())?;
-    handler.forget();
-    */
-    showModal(&param);
-    Ok(JsValue::TRUE)
+    #[wasm_bindgen(js_namespace = wx)]
+    fn showToast(param: &JsValue);
 }
 
 #[wasm_bindgen]
@@ -50,11 +23,38 @@ pub fn md5(data: JsValue) -> JsValue {
 
 //onLoad
 #[wasm_bindgen(js_name = onLoad)]
-pub fn on_load() {
-    match page_on_load() {
-        Err(err) => error(&format!("{:?}", err)),
-        _ => (),
+pub fn on_load() -> Result<JsValue, JsValue>{
+    // 弹出对话框
+    let params: Object = Object::new();
+    Reflect::set(&params, &JsValue::from("title"), &JsValue::from("温馨提示"))?;
+    Reflect::set(&params, &JsValue::from("content"), &JsValue::from("页面加载完成了！"))?;
+
+    // 对话框按钮回调
+    let handler = move |res:&JsValue| -> Result<JsValue, JsValue> {
+        let confirm:bool = Reflect::get(res, &JsValue::from("confirm"))?.as_bool().unwrap_or(false);
+        let cancel:bool = Reflect::get(res, &JsValue::from("cancel"))?.as_bool().unwrap_or(false);
+
+        // 显示吐司
+        let params = Object::new();
+        Reflect::set(&params, &JsValue::from("icon"), &JsValue::from("none"))?;
+
+        if confirm{
+            Reflect::set(&params, &JsValue::from("title"), &JsValue::from("点击了确定"))?;
+        }
+        if cancel{
+            Reflect::set(&params, &JsValue::from("title"), &JsValue::from("点击了取消"))?;
+        }
+        
+        showToast(&params);
+
+        Ok(JsValue::NULL)
     };
+    let handler = Closure::wrap(Box::new(handler) as Box<dyn Fn(&JsValue) -> Result<JsValue, JsValue> >);
+    Reflect::set(&params, &JsValue::from("complete"), handler.as_ref())?;
+    handler.forget();
+    
+    showModal(&params);
+    Ok(JsValue::NULL)
 }
 
 #[wasm_bindgen(start)]
